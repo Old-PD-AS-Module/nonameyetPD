@@ -87,7 +87,8 @@ public abstract class RangedWeapon extends Weapon {
             if( QuickSlot.quickslot2.value == this && ( hero.belongings.weap2 == null || !hero.belongings.weap2.isCursed() ) )
                 QuickSlot.quickslot2.value = hero.belongings.weap2 != null && hero.belongings.weap2.stackable ? hero.belongings.weap2.getClass() : hero.belongings.weap2 ;
 
-            if( QuickSlot.quickslot3.value == this && ( hero.belongings.weap1 == null || !hero.belongings.weap2.isCursed() ) )
+            //Fixed This QuickSlot3
+            if( QuickSlot.quickslot3.value == this && ( hero.belongings.weap2 == null || !hero.belongings.weap2.isCursed() ) )
                 QuickSlot.quickslot3.value = hero.belongings.weap2 != null && hero.belongings.weap2.stackable ? hero.belongings.weap2.getClass() : hero.belongings.weap2 ;
 
             if ( ( hero.belongings.weap2 == null || hero.belongings.weap2.doUnequip(hero, true, false) ) &&

@@ -39,11 +39,12 @@ public class WndChangelog extends Window {
 	private static final int WIDTH_L	= 160;
 	private static final int HEIGHT_L	= 128;
 
-    private static final String TXT_TITLE	= "无名的像素地牢 中文版 Beta2";
+    private static final String TXT_TITLE	= "无名的像素地牢 中文版 Beta2.5";
 
     private static final String TXT_DESCR =
 
-            "初步汉化的无名地牢，_基于0.4.1版本_。\n\n" +
+            "无名地牢中文版，_基于0.4.1版本_。\n\n" +
+                    "Beta2.5更新说明：\n-修复_第三个快捷栏的遗留崩溃_问题\n\n" +
                     "Beta2更新说明：\n-1.修复了_文本切屏错乱问题_，并_添加了错误报告_。\n\n-2.优化了主界面的滚动可能卡顿的问题\n\n" +
                     "若你在_无名地牢Beta2_遇到任何报错，都请复制错误报告到\n\n-_QQ:2735951230_\n-_CutelinXXX@126.com_(以上均可)" +
                     "\n并说明发生错误前详细情况。\n\n==========Beta1更新日志：===========\n" +

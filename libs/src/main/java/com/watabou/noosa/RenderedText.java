@@ -225,19 +225,6 @@ public class RenderedText extends Image {
 		}
 	}
 
-	public static void setFont(String asset) {
-		if (asset == null) font = null;
-		else font = Typeface.createFromAsset(Game.instance.getAssets(), asset);
-		clearCache();
-	}
-
-	public static Typeface getFont() {
-		return font;
-	}
-
-	public void setPos(int i, float v) {
-	}
-
 	private static class CachedText {
 		public SmartTexture texture;
 		public RectF rect;
