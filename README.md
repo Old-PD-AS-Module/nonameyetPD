@@ -4,11 +4,11 @@ Not Name Yet Pixel Dungeon Chinese Version
 This is Not Name Yet Pixel Dungeon V0.4.1-Chinese Version  
 If you Build Apks,You Should Download IDEA OR [Android Studio](https://developer.android.google.cn/studio)  
 And Sync Gradle Version,But You can use you gradle package  
+Of course, I'm just suggesting that it's all up to you.  
 # Original
 This Original Code:[Not Not Name Yet Pixel Dungeon-Code](https://gitlab.com/RavenWolfPD/nonameyetpixeldungeon)  
-Of course, I'm just suggesting that it's all up to you.
 # Not Name Yet PD CN-ORV(Original)
-[Chinese-ORV](https://github.com/1os4r/NoNameYetPixelDungeon-CN)
+## [Chinese-ORV](https://github.com/1os4r/NoNameYetPixelDungeon-CN)
 
 ## Changes introduced by No Name Yet Pixel Dungeon
 
