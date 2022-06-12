@@ -7,3 +7,5 @@ And Sync Gradle Version,But You can use you gradle package
 # Original
 This Original Code:[Not Not Name Yet Pixel Dungeon-Code](https://gitlab.com/RavenWolfPD/nonameyetpixeldungeon)  
 Of course, I'm just suggesting that it's all up to you.
+# CN-ORV
+[Chinese-ORV](https://github.com/1os4r/NoNameYetPixelDungeon-CN)
