@@ -32,7 +32,9 @@ import com.ravenwolf.nnypd.visuals.effects.BlobEmitter;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class Blob extends Actor {
 	
@@ -49,16 +51,39 @@ public class Blob extends Actor {
 	protected int[] off;
 	
 	public BlobEmitter emitter;
-	
+
 	protected Blob() {
-		
+
 		cur = new int[LENGTH];
 		off = new int[LENGTH];
 		bln = new boolean[LENGTH];
 
 		volume = 0;
 	}
-	
+
+
+	/* TODO 0.5中尚未生效的代码 */
+	public static boolean[] getHarmfulMap(boolean magical) {
+		boolean[] harmful = new boolean[LENGTH];
+		ArrayList<Class<? extends Blob>> blobTypes = new ArrayList<>(Arrays.asList(Fire.class, Electricity.class, CorrosiveGas.class));
+		if (magical) {
+			blobTypes.add(Sanctuary.class);
+			blobTypes.add(Sunlight.class);
+		} else {
+			blobTypes.add(Miasma.class);
+		}
+		Iterator<Class<? extends Blob>> it = blobTypes.iterator();
+		while (it.hasNext()) {
+			Class<? extends Blob> blobClass = it.next();
+			Blob blob = Dungeon.level.blobs.get(blobClass);
+			if (blob != null) {
+				BArray.or(harmful, blob.bln, harmful);
+			}
+		}
+		return harmful;
+	}
+
+
 	private static final String CUR		= "cur";
 	private static final String START	= "start";
 	

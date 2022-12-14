@@ -115,7 +115,7 @@ public class SummonSpiritWolfSkill extends BuffSkill {
             public void call() {
                 SpiritWolf.spawnAt(stats,level, cell);
                 CellEmitter.center( cell ).burst( AltarParticle.FACTORY, 6 );
-                Sample.INSTANCE.play( Assets.SND_GHOST, 1,1,0.75f);
+                Sample.INSTANCE.play( Assets.SND_LIGHTNING, 1,1,0.75f);
                 Dungeon.hero.spendAndNext(1f);
             }
         });

@@ -28,6 +28,10 @@ import com.ravenwolf.nnypd.visuals.effects.BlobEmitter;
 import com.ravenwolf.nnypd.visuals.effects.Speck;
 
 public class ShroudingFog extends Blob {
+
+	public int actingPriority() {
+		return 10;
+	}
 	
 	@Override
 	protected void evolve() {

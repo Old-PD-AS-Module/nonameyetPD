@@ -344,7 +344,7 @@ public class Hero extends Char {
     }
 
 
-    private HashSet<String> perks=new HashSet();
+    private final HashSet<String> perks=new HashSet();
     public boolean hasPerk(String perk){
         return perks.contains(perk);
     }
@@ -1710,22 +1710,21 @@ public class Hero extends Char {
 
                 }
 
-                if( Level.passable[ target ] || Level.avoid[ target ] && !Level.illusory[ target ] ){
-
-                    if(
-                        Trap.itsATrap( Dungeon.level.map[ target ] )
-                        && buff( Dazed.class) == null
-                        && !flying && !Trap.stepConfirmed
-                    ) {
-
-                        Trap.askForConfirmation( this );
-                        interrupt();
-
-                    } else {
-
-                        return makeStep( target );
-
+                if (Level.adjacent(this.pos, target)) {
+                    if (Actor.findChar(target) == null) {
+                        if (Level.chasm[target] && !this.flying && !Chasm.jumpConfirmed) {
+                            Chasm.heroJump(this);
+                            interrupt();
+                            return false;
+                        } else if (Level.passable[target] || (Level.avoid[target] && !Level.illusory[target])) {
+                            if (Dungeon.level.map[target] != 13 || buff(Dazed.class) != null || this.flying || Trap.stepConfirmed) {
+                                return makeStep(target);
+                            }
+                            Trap.askForConfirmation(this);
+                            interrupt();
+                        }
                     }
+                    return false;
                 }
             }
 
@@ -2357,7 +2356,7 @@ public class Hero extends Char {
                 theKey = null;
             }
 
-            int doorCell = ( (HeroAction.Unlock) curAction ).dst;
+            int doorCell = curAction.dst;
             int door = Dungeon.level.map[ doorCell ];
 
             Level.set( doorCell, door == Terrain.LOCKED_DOOR ? Terrain.DOOR_CLOSED : Terrain.UNLOCKED_EXIT );
@@ -2365,7 +2364,7 @@ public class Hero extends Char {
 
         } else if( curAction instanceof HeroAction.Examine ){
 
-            int cell = ( (HeroAction.Examine) curAction ).dst;
+            int cell = curAction.dst;
 
             Bookshelf.examine( cell );
 
@@ -2376,7 +2375,7 @@ public class Hero extends Char {
                 theKey = null;
             }
 
-            Heap heap = Dungeon.level.heaps.get( ( (HeroAction.OpenChest) curAction ).dst );
+            Heap heap = Dungeon.level.heaps.get( curAction.dst );
 //			if (heap.type == Type.BONES || heap.type == Type.BONES_CURSED) {
 //				Sample.INSTANCE.play( Assets.SND_BONES );
 //			}

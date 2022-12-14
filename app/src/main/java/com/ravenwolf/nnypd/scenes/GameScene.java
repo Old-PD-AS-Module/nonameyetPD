@@ -27,8 +27,8 @@ import com.ravenwolf.nnypd.Badges;
 import com.ravenwolf.nnypd.Dungeon;
 import com.ravenwolf.nnypd.DungeonTilemap;
 import com.ravenwolf.nnypd.FogOfWar;
-import com.ravenwolf.nnypd.Statistics;
 import com.ravenwolf.nnypd.NoNameYetPixelDungeon;
+import com.ravenwolf.nnypd.Statistics;
 import com.ravenwolf.nnypd.actors.Actor;
 import com.ravenwolf.nnypd.actors.blobs.Blob;
 import com.ravenwolf.nnypd.actors.hazards.Hazard;
@@ -71,6 +71,7 @@ import com.ravenwolf.nnypd.visuals.windows.WndGame;
 import com.ravenwolf.nnypd.visuals.windows.WndStory;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Gizmo;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.SkinnedBlock;
 import com.watabou.noosa.Visual;
@@ -83,6 +84,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class GameScene extends PixelScene {
+
+	public static void visualOverTerrain(Gizmo gizmo) {
+		scene.terrain.add(gizmo);
+	}
 
 	private static final String TXT_WELCOME			= "\n欢迎来到像素地牢的第%d层！";
 	private static final String TXT_WELCOME_BACK	= "\n欢迎回到像素地牢的第%d层！";

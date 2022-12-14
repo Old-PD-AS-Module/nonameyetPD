@@ -26,7 +26,6 @@ package com.ravenwolf.nnypd.actors.buffs.special;
 import com.ravenwolf.nnypd.actors.Char;
 import com.ravenwolf.nnypd.actors.buffs.BuffActive;
 import com.ravenwolf.nnypd.actors.hero.Hero;
-import com.ravenwolf.nnypd.actors.hero.HeroSubClass;
 import com.ravenwolf.nnypd.items.armours.shields.Shield;
 import com.ravenwolf.nnypd.visuals.Assets;
 import com.ravenwolf.nnypd.visuals.sprites.CharSprite;
@@ -65,17 +64,18 @@ public class Guard extends BuffActive {
         return "格挡";
     }
 
+/*TODO 0.5 Remove*/
 
-    public boolean act(){
-
-        if (target.moving && target instanceof Hero) {
-            Hero hero = (Hero) target;
-            if (hero.subClass == HeroSubClass.KNIGHT) {
-                add(1);
-            }
-        }
-        return super.act();
-    }
+//    public boolean act(){
+//
+//        if (target.moving && target instanceof Hero) {
+//            Hero hero = (Hero) target;
+//            if (hero.subClass == HeroSubClass.KNIGHT) {
+//                add(1);
+//            }
+//        }
+//        return super.act();
+//    }
 
     @Override
 //    public String statusMessage() { return "guard"; }

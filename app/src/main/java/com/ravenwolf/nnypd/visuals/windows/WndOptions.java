@@ -26,79 +26,59 @@ package com.ravenwolf.nnypd.visuals.windows;
 import com.ravenwolf.nnypd.scenes.PixelScene;
 import com.ravenwolf.nnypd.visuals.ui.RedButton;
 import com.ravenwolf.nnypd.visuals.ui.Window;
-import com.ravenwolf.nnypd.visuals.ui.RenderedTextMultiline;
+import com.watabou.noosa.BitmapTextMultiline;
 
 import java.util.ArrayList;
 
 public class WndOptions extends Window {
+	private static final int BUTTON_HEIGHT = 20;
+	private static final int DISABLED_COLOR = 13291458;
+	private static final int MARGIN = 2;
+	private static final int WIDTH = 120;
+	public ArrayList<Integer> disabled;
 
-    private static final int DISABLED_COLOR	= 0xCACFC2;
+	public WndOptions(String str, String str2, String... strArr) {
+		this.disabled = new ArrayList<>();
+		this.disabled = disabled();
+		BitmapTextMultiline createMultiline = PixelScene.createMultiline(str, 9.0f);
+		createMultiline.hardlight(Window.TITLE_COLOR);
+		createMultiline.y = 2.0f;
+		createMultiline.x = 2.0f;
+		createMultiline.maxWidth = 116;
+		createMultiline.measure();
+		add(createMultiline);
+		BitmapTextMultiline createMultiline2 = PixelScene.createMultiline(str2, 7.0f);
+		createMultiline2.maxWidth = 116;
+		createMultiline2.measure();
+		createMultiline2.x = 2.0f;
+		createMultiline2.y = createMultiline.y + createMultiline.height() + 2.0f;
+		add(createMultiline2);
+		float height = createMultiline2.y + createMultiline2.height() + 2.0f;
 
-	private static final int WIDTH			= 120;
-	private static final int MARGIN 		= 2;
-	private static final int BUTTON_HEIGHT	= 20;
-
-    public ArrayList<Integer> disabled = new ArrayList<>();
-
-	public WndOptions( String title, String message, String... options ) {
-		super();
-
-        this.disabled = disabled();
-
-		//BitmapTextMultiline tfTitle = PixelScene.createMultiline( title, 9 );
-		RenderedTextMultiline tfTitle = PixelScene.renderMultiline( title, 9 );
-		tfTitle.hardlight( TITLE_COLOR );
-		//tfTitle.x = tfTitle.y = MARGIN;
-		//tfTitle.maxWidth = WIDTH - MARGIN * 2;
-		//tfTitle.measure();
-		tfTitle.setPos(MARGIN,MARGIN);
-		PixelScene.align(tfTitle);
-		add( tfTitle );
-		
-		/*BitmapTextMultiline tfMessage = PixelScene.createMultiline( message, 7 );
-		tfMessage.maxWidth = WIDTH - MARGIN * 2;
-		tfMessage.measure();
-		tfMessage.x = MARGIN;
-		tfMessage.y = tfTitle.y + tfTitle.height() + MARGIN;
-		add( tfMessage );
-		
-		float pos = tfMessage.y + tfMessage.height() + MARGIN;*/
-		
-		RenderedTextMultiline tfMessage = PixelScene.renderMultiline( message, 7 );
-		tfMessage.maxWidth(WIDTH - MARGIN * 2);
-		PixelScene.align(tfMessage);
-		tfMessage.setPos(MARGIN, MARGIN + tfTitle.height() + MARGIN);
-		add( tfMessage );
-		
-		float pos = MARGIN + tfTitle.height() + MARGIN + tfMessage.height() + MARGIN;
-		
-		for (int i=0; i < options.length; i++) {
+		for (int i = 0; i < strArr.length; i++) {
 			final int index = i;
-			RedButton btn = new RedButton( options[i] ) {
+			RedButton redButton = new RedButton( strArr[i] ) {
 				@Override
 				protected void onClick() {
 					hide();
 					onSelect( index );
 				}
 			};
-
-            if( disabled != null && disabled.contains( index ) ) {
-                btn.textColor( DISABLED_COLOR );
-            }
-
-			btn.setRect( MARGIN, pos, WIDTH - MARGIN * 2, BUTTON_HEIGHT );
-
-			add( btn );
-			
-			pos += BUTTON_HEIGHT + MARGIN;
+			ArrayList<Integer> arrayList = this.disabled;
+			if (arrayList != null && arrayList.contains(i)) {
+				redButton.textColor(DISABLED_COLOR);
+			}
+			redButton.setRect(2.0f, height, 116.0f, 20.0f);
+			add(redButton);
+			height += 22.0f;
 		}
-		
-		resize( WIDTH, (int)pos );
+		resize(120, (int) height);
 	}
-	
-	protected void onSelect( int index ) {}
 
-    protected ArrayList<Integer> disabled() {
-        return null;
-    }
+	protected void onSelect(int i) {
+	}
+
+	protected ArrayList<Integer> disabled() {
+		return null;
+	}
 }

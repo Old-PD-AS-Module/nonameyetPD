@@ -117,6 +117,10 @@ public abstract class Char extends Actor {
 //	private static final String TXT_YOU_MISSED	= "%s %s your attack";
 //	private static final String TXT_SMB_MISSED	= "%s %s %s's attack";
 
+    public boolean ignoreDarkness() {
+        return false;
+    }
+
     protected static final int VIEW_DISTANCE	= 8;
 
 	public int pos = 0;

@@ -84,7 +84,20 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class Dungeon {
-	
+
+
+	public static int getVarianceFactor(int i) {
+		return level.getTileVariance(i);
+	}
+
+	public static boolean isIsometric() {
+		return NoNameYetPixelDungeon.isometricTiles();
+	}
+
+	public static int isometricOffset() {
+		return isIsometric() ? 4 : 0;
+	}
+
 	public static int potionOfStrength;
 	public static int potionOfExperience;
 	public static int scrollsOfUpgrade;

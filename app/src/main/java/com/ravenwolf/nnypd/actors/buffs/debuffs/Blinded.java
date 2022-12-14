@@ -68,7 +68,7 @@ public class Blinded extends Debuff {
     public void applyVisual() {
 
         if (target.sprite.visible) {
-            Sample.INSTANCE.play( Assets.SND_DEGRADE ,0.8f,0.8f,0.6f);
+            Sample.INSTANCE.play( Assets.SND_DEGRADE ,0.6f,0.6f,1.6f);
         }
 
         target.sprite.add( CharSprite.State.BLINDED );

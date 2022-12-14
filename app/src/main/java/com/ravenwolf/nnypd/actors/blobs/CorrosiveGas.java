@@ -31,7 +31,6 @@ import com.ravenwolf.nnypd.actors.buffs.debuffs.Burning;
 import com.ravenwolf.nnypd.actors.buffs.debuffs.Corrosion;
 import com.ravenwolf.nnypd.actors.mobs.Elemental;
 import com.ravenwolf.nnypd.levels.Level;
-import com.ravenwolf.nnypd.levels.Terrain;
 import com.ravenwolf.nnypd.scenes.GameScene;
 import com.ravenwolf.nnypd.visuals.effects.BlobEmitter;
 import com.ravenwolf.nnypd.visuals.effects.Speck;
@@ -46,60 +45,49 @@ public class CorrosiveGas extends Blob {
     }
 
 	@Override
-	protected void evolve() {
-		super.evolve();
+    protected void evolve() {
+        Char ch;
+        CorrosiveGas.super.evolve();
         boolean terrainAffected = false;
-
-		Char ch;
-		for (int i=0; i < LENGTH; i++) {
-			if (cur[i] > 0 && (ch = Actor.findChar( i )) != null) {
-
-                BuffActive.add( ch, Corrosion.class, TICK * 2 );
-
-                // FIXME
-                if ( ch.buff( Burning.class ) != null || ch instanceof Elemental ) {
+        for (int i = 0; i < 1024; i++) {
+            if (this.cur[i] > 0 && (ch = Actor.findChar(i)) != null) {
+                BuffActive.add(ch, Corrosion.class, 2.0f);
+                if (ch.buff(Burning.class) != null || (ch instanceof Elemental)) {
                     GameScene.add(Blob.seed(ch.pos, 2, Fire.class));
                 }
-			}
-            //disolve grass
-            if (cur[i] > 0 && Random.Int( 4 ) ==0 && Dungeon.level.map[i] == Terrain.HIGH_GRASS ) {
-                Level.set(i, Terrain.GRASS);
+            }
+            if (this.cur[i] > 0 && Random.Int(4) == 0 && Dungeon.level.map[i] == 9) {
+                Level.set(i, 10);
                 GameScene.updateMap(i);
                 terrainAffected = true;
             }
-		}
-
-        Blob blob = Dungeon.level.blobs.get( Fire.class );
+        }
+        Blob blob = Dungeon.level.blobs.get(Fire.class);
         if (blob != null) {
-
-            for (int pos=0; pos < LENGTH; pos++) {
-
-                if ( cur[pos] > 0 && blob.cur[ pos ] < 2 ) {
-
+            for (int pos = 0; pos < 1024; pos++) {
+                if (this.cur[pos] > 0 && blob.cur[pos] < 2) {
                     int flammability = 0;
-
                     for (int n : Level.NEIGHBOURS8) {
-                        if ( blob.cur[ pos + n ] > 0 ) {
+                        if (blob.cur[pos + n] > 0) {
                             flammability++;
                         }
                     }
-
-                    if( Random.Int( 4 ) < flammability ) {
-
-                        blob.volume += ( blob.cur[ pos ] = 2 );
-
-                        volume -= ( cur[pos] / 2 );
-                        cur[pos] -=( cur[pos] / 2 );
-
+                    if (Random.Int(4) < flammability) {
+                        int i2 = blob.volume;
+                        blob.cur[pos] = 2;
+                        blob.volume = i2 + 2;
+                        int i3 = this.volume;
+                        int[] iArr2 = this.cur;
+                        this.volume = i3 - (iArr2[pos] / 2);
+                        iArr2[pos] = iArr2[pos] - (iArr2[pos] / 2);
                     }
-
                 }
             }
         }
-
-        if (terrainAffected)
+        if (terrainAffected) {
             Dungeon.observe();
-	}
+        }
+    }
 	
 	@Override
 	public void use( BlobEmitter emitter ) {

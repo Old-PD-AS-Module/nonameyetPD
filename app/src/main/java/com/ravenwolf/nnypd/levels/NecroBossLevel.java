@@ -337,10 +337,10 @@ public class NecroBossLevel extends Level {
 		return cx < ROOM_LEFT - 1 || cx > ROOM_RIGHT + 1 || cy < ROOM_TOP - 1 || cy > ROOM_BOTTOM + 1;
 	}
 
-    @Override
-    public boolean noTeleport() {
-        return enteredArena && !keyDropped;
-    }
+//    @Override
+//    public boolean noTeleport() {
+//        return enteredArena && !keyDropped;
+//    }
 
     @Override
     public String tileName( int tile ) {

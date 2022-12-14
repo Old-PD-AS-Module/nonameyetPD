@@ -52,7 +52,7 @@ public abstract class Hazard extends Actor {
 
     @Override
     public int actingPriority(){
-        return 3;
+        return 10;
     }
 
     public abstract void press( int cell, Char ch );

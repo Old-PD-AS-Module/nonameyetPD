@@ -134,7 +134,7 @@ public class HauntedWeaponSleep extends Hazard {
     public void destroy() {
         super.destroy();
         sprite.kill();
-        sprite.destroy();
+        sprite.killAndErase();
     }
 
     private static final String WEAPON	= "weapon";

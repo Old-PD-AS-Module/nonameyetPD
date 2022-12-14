@@ -26,11 +26,9 @@ package com.ravenwolf.nnypd.actors.buffs.special.skills;
 
 import com.ravenwolf.nnypd.Dungeon;
 import com.ravenwolf.nnypd.actors.Actor;
-import com.ravenwolf.nnypd.actors.buffs.Buff;
 import com.ravenwolf.nnypd.actors.buffs.BuffActive;
 import com.ravenwolf.nnypd.actors.buffs.bonuses.Invisibility;
 import com.ravenwolf.nnypd.actors.buffs.debuffs.Blinded;
-import com.ravenwolf.nnypd.actors.buffs.debuffs.Ensnared;
 import com.ravenwolf.nnypd.actors.hero.Hero;
 import com.ravenwolf.nnypd.actors.mobs.Mob;
 import com.ravenwolf.nnypd.items.wands.CharmOfBlink;
@@ -90,7 +88,7 @@ public class SmokeBomb extends BuffSkill {
                 }
 */
 
-                Buff.detach(hero, Ensnared.class);
+                //Buff.detach(hero, Ensnared.class);
                 hero.sprite.turnTo(hero.pos, target);
                 CharmOfBlink.appear(hero, target);
                 CellEmitter.get(hero.pos).burst(Speck.factory(Speck.WOOL), 2);

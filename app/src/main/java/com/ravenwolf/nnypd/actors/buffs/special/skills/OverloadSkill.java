@@ -44,9 +44,9 @@ public class OverloadSkill extends BuffSkill {
     public void doAction(){
 
         Hero hero=Dungeon.hero;
-        int duration = 20;
+        int duration = 16;
         if (hero.subClass == HeroSubClass.CONJURER)
-            duration +=5;
+            duration +=16 + 4;
         BuffActive.add( hero, Overload.class, duration);
         hero.sprite.centerEmitter().burst(EnergyParticle.FACTORY, 12);
         Sample.INSTANCE.play(Assets.SND_BEACON,1,1,0.5f);

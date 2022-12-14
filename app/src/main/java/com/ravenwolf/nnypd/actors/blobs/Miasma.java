@@ -29,6 +29,7 @@ import com.ravenwolf.nnypd.actors.Actor;
 import com.ravenwolf.nnypd.actors.Char;
 import com.ravenwolf.nnypd.actors.buffs.debuffs.Burning;
 import com.ravenwolf.nnypd.actors.buffs.debuffs.Withered;
+import com.ravenwolf.nnypd.actors.mobs.PlagueDoctor;
 import com.ravenwolf.nnypd.levels.Level;
 import com.ravenwolf.nnypd.scenes.GameScene;
 import com.ravenwolf.nnypd.visuals.effects.BlobEmitter;
@@ -45,60 +46,47 @@ public class Miasma extends Blob {
     }
 
 	@Override
-	protected void evolve() {
-		super.evolve();
-
-		Char ch;
-		for (int i=0; i < LENGTH; i++) {
-			if (cur[i] > 0 && (ch = Actor.findChar( i )) != null) {
-
-                if( !ch.isMagical() ) {
-
-                    int effect = (int)Math.sqrt( ch.totalHealthValue() );
-
-                    Withered debuff = ch.buff( Withered.class );
-
-                    if( debuff != null ) {
-                        effect += debuff.getDuration()/2;
+    protected void evolve() {
+        Char ch;
+        Miasma.super.evolve();
+        for (int i = 0; i < 1024; i++) {
+            if (this.cur[i] > 0 && (ch = Actor.findChar(i)) != null) {
+                if (!ch.isMagical() && !(ch instanceof PlagueDoctor)) {
+                    int effect = (int) Math.sqrt(ch.totalHealthValue());
+                    Withered debuff = ch.buff(Withered.class);
+                    if (debuff != null) {
+                        effect += debuff.getDuration() / 2;
                     }
-                    ch.damage( Random.NormalIntRange(1, effect ) , this, Element.UNHOLY );
-
+                    ch.damage(Random.NormalIntRange(1, effect), this, Element.UNHOLY);
                 }
-
-                if ( ch.buff( Burning.class ) != null) {
+                if (ch.buff(Burning.class) != null) {
                     GameScene.add(Blob.seed(ch.pos, 2, Fire.class));
-                }
-			}
-		}
-
-        Blob blob = Dungeon.level.blobs.get( Fire.class );
-        if (blob != null) {
-
-            for (int pos=0; pos < LENGTH; pos++) {
-
-                if ( cur[pos] > 0 && blob.cur[ pos ] < 2 ) {
-
-                    int flammability = 0;
-
-                    for (int n : Level.NEIGHBOURS8) {
-                        if ( blob.cur[ pos + n ] > 0 ) {
-                            flammability++;
-                        }
-                    }
-
-                    if( Random.Int( 4 ) < flammability ) {
-
-                        blob.volume += ( blob.cur[ pos ] = 2 );
-
-                        volume -= ( cur[pos] / 2 );
-                        cur[pos] -=( cur[pos] / 2 );
-
-                    }
-
                 }
             }
         }
-	}
+        Blob blob = Dungeon.level.blobs.get(Fire.class);
+        if (blob != null) {
+            for (int pos = 0; pos < 1024; pos++) {
+                if (this.cur[pos] > 0 && blob.cur[pos] < 2) {
+                    int flammability = 0;
+                    for (int n : Level.NEIGHBOURS8) {
+                        if (blob.cur[pos + n] > 0) {
+                            flammability++;
+                        }
+                    }
+                    if (Random.Int(4) < flammability) {
+                        int i2 = blob.volume;
+                        blob.cur[pos] = 2;
+                        blob.volume = i2 + 2;
+                        int i3 = this.volume;
+                        int[] iArr2 = this.cur;
+                        this.volume = i3 - (iArr2[pos] / 2);
+                        iArr2[pos] = iArr2[pos] - (iArr2[pos] / 2);
+                    }
+                }
+            }
+        }
+    }
 	
 	@Override
 	public void use( BlobEmitter emitter ) {

@@ -318,7 +318,7 @@ public class SpectralBladesSkill extends BuffSkill {
             //float modifier = hero.ringBuffsHalved( RingOfAccuracy.Accuracy.class );
             //return (int)(hero.attackSkill*modifier);
 
-            return 6+(hero.lvl/2);
+            return 8+(hero.lvl/2);
             //return 10+(hero.lvl/2);
         }
 

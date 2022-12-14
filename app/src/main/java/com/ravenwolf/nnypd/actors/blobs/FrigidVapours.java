@@ -33,7 +33,7 @@ import com.ravenwolf.nnypd.visuals.effects.BlobEmitter;
 import com.ravenwolf.nnypd.visuals.effects.particles.SnowParticle;
 
 public class FrigidVapours extends Blob {
-
+    int startCell;
     public FrigidVapours() {
         super();
 
@@ -89,6 +89,11 @@ public class FrigidVapours extends Blob {
         super.use( emitter );
 
         emitter.pour( SnowParticle.FACTORY, 0.3f );
+    }
+
+    public void seed(int cell, int amount) {
+        FrigidVapours.super.seed(cell, amount);
+        this.startCell = cell;
     }
 
     @Override

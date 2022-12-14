@@ -47,8 +47,11 @@ public class SoulLink extends Buff {
 
     @Override
     public String playerMessage() { return "You are soul linked!"; }*/
-    @Override
-    public String statusMessage() { return "灵魂链接"; }
+
+    /*TODO 0.5 Remove*/
+
+//    @Override
+//    public String statusMessage() { return "灵魂链接"; }
 
     @Override
     public String playerMessage() { return "你处于灵魂链接状态!"; }
