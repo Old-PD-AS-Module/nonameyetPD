@@ -57,7 +57,7 @@ public class SubmergedPiranha extends Hazard {
             for (int n : Level.NEIGHBOURS9) {
                 int pos = this.pos + n;
                 Char c = Actor.findChar(pos);
-                if (Level.insideMap(pos) && (c = Actor.findChar(pos)) != null && c.isFriendly() && c.invisible == 0 && Dungeon.findPath(c, c.pos, ((Hazard) this).pos, Level.water, Level.fieldOfView) != -1) {
+                if (c != null && c.isFriendly() && c.invisible==0) {
                     spawnPiranha(c);
                     return true;
                 }

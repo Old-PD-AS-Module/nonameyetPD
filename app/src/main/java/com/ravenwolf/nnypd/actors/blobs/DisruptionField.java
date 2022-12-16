@@ -32,6 +32,7 @@ import com.ravenwolf.nnypd.actors.buffs.debuffs.Disrupted;
 import com.ravenwolf.nnypd.actors.mobs.Mob;
 import com.ravenwolf.nnypd.levels.Level;
 import com.ravenwolf.nnypd.misc.utils.BArray;
+import com.ravenwolf.nnypd.visuals.Assets;
 import com.ravenwolf.nnypd.visuals.effects.BlobEmitter;
 import com.ravenwolf.nnypd.visuals.effects.CellEmitter;
 import com.ravenwolf.nnypd.visuals.effects.particles.ElmoParticle;
@@ -68,88 +69,95 @@ public class DisruptionField extends Blob {
 
     @Override
     protected void evolve() {
-        boolean[] notBlocking = BArray.not(Level.solid, null);
-        boolean heard = false;
-        for (int i = 0; i < 1024; i++) {
-            if (this.cur[i] == BURST_STATE) {
+
+        boolean[] notBlocking = BArray.not( Level.solid, null );
+        Char ch;
+        //expand
+
+        boolean heard=false;
+
+        //first explode all the ready blobs
+        for (int i = 0; i < LENGTH; i++) {
+            if (cur[i] == BURST_STATE) {
+
                 for (int n : Level.NEIGHBOURS9) {
-                    int pos = n + i;
-                    if (this.cur[pos] > 0) {
+                    int pos=n+i;
+                    if (cur[pos]>0) {
                         if (Dungeon.visible[pos]) {
                             CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
                             heard = true;
                         }
-                        Char ch = Actor.findChar(pos);
-                        if (ch != null) {
-                            int effect = this.power[i];
-                            if (ch.isMagical()) {
-                                BuffActive.addFromDamage(ch, Disrupted.class, effect);
+
+                        if ((ch = Actor.findChar(pos)) != null) {
+                            if (ch instanceof Char) {
+
+                                //int effect =  cur[pos]==BURST_STATE? (int)(power[i]*1.33f):power[i];
+                                int effect = power[i];
+
+                                Char mob = ch;
+                                //deals half damage to hero and allies
+                                if (mob.isFriendly())
+                                    effect/=2;
+
+                                if (mob.isMagical())
+                                    BuffActive.addFromDamage(mob, Disrupted.class, effect);
+                                ch.damage(ch.absorb(Random.Int(effect / 2, effect), true), this, Element.ENERGY);
+
                             }
-                            ch.damage(ch.absorb(Random.Int(effect / 2, effect), true), this, Element.ENERGY);
                         }
-                        int[] iArr3 = this.cur;
-                        if (iArr3[pos] < SPREAD_STATE) {
-                            int[] iArr4 = this.off;
-                            int i2 = NO_STATE;
-                            iArr4[pos] = i2;
-                            iArr3[pos] = i2;
+                        if (cur[pos]<SPREAD_STATE) {
+                            off[pos] = NO_STATE;
+                            cur[pos] = NO_STATE;
                         }
                     }
                 }
-                this.power[i] = 0;
+                power[i] = 0;
             }
         }
-        if (heard) {
-            Sample.INSTANCE.play("snd_ray.mp3", 0.5f, 0.5f, 1.5f);
-        }
-        this.volume = 0;
-        for (int i3 = 0; i3 < 1024; i3++) {
-            int[] iArr5 = this.cur;
-            if (iArr5[i3] == DELAYED_BURST_STATE) {
-                int[] iArr6 = this.off;
-                int i4 = BURST_STATE;
-                iArr6[i3] = i4;
-                iArr5[i3] = i4;
-                this.volume += i4;
-            } else {
-                int i5 = iArr5[i3];
-                int i6 = BURST_STATE;
-                if (i5 > i6) {
-                    if (iArr5[i3] == INIT_STATE) {
-                        int i7 = SPREAD_STATE;
-                        iArr5[i3] = i7;
-                        this.off[i3] = i7;
-                        this.volume += i7;
-                        Char findChar = Actor.findChar(i3);
-                        if ((findChar instanceof Mob)) {
-                            ((Mob) findChar).inspect(i3);
-                        }
-                    } else if (iArr5[i3] == SPREAD_STATE) {
-                        iArr5[i3] = i6;
-                        this.off[i3] = i6;
-                        this.volume += i6;
-                        Char findChar2 = Actor.findChar(i3);
-                        if ((findChar2 instanceof Mob)) {
-                            ((Mob) findChar2).inspect(i3);
-                        }
-                        for (int n2 : Level.NEIGHBOURS8) {
-                            int pos2 = i3 + n2;
-                            if (notBlocking[pos2] && this.cur[pos2] == 0) {
-                                Char findChar3 = Actor.findChar(pos2);
-                                if ((findChar3 instanceof Mob)) {
-                                    ((Mob) findChar3).inspect(pos2);
-                                }
-                                int[] iArr7 = this.cur;
-                                int i8 = REMOVE_STATE;
-                                iArr7[pos2] = i8;
-                                this.off[pos2] = i8;
-                                this.volume += i8;
-                            }
+        if (heard)
+            Sample.INSTANCE.play(Assets.SND_MELD);
+
+        volume=0;
+        //Expand
+        for (int i = 0; i < LENGTH; i++) {
+            if (cur[i] == DELAYED_BURST_STATE) {
+                off[i] = BURST_STATE;
+                cur[i] = BURST_STATE;
+                volume+=BURST_STATE;
+            }else
+            if (cur[i] > BURST_STATE  ) {
+
+                if (cur[i] ==INIT_STATE){
+                    cur[i]=SPREAD_STATE;
+                    off[i]=SPREAD_STATE;
+                    volume+=SPREAD_STATE;
+                    if ((ch = Actor.findChar(i)) != null && ch instanceof Mob)
+                        ((Mob)ch).inspect( i );
+
+                }else if (cur[i] ==SPREAD_STATE) {
+                    cur[i] =BURST_STATE;
+                    off[i]=BURST_STATE;
+                    volume+=BURST_STATE;
+                    if ((ch = Actor.findChar(i)) != null && ch instanceof Mob)
+                        ((Mob)ch).inspect( i );
+
+                    for (int n : Level.NEIGHBOURS8) {
+                        int pos=i + n;
+                        if (notBlocking[pos] && cur[pos] == 0) {
+                            if ((ch = Actor.findChar(pos)) != null && ch instanceof Mob)
+                                ((Mob)ch).inspect( pos );
+                            cur[pos] = REMOVE_STATE;
+                            off[pos] = REMOVE_STATE;
+                            volume += REMOVE_STATE;
                         }
                     }
                 }
             }
+
         }
+
+
+
     }
 
 /*

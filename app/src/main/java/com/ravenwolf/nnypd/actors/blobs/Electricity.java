@@ -55,7 +55,7 @@ public class Electricity extends Blob {
     protected void evolve() {
         super.evolve();
 
-        //Char ch;
+        Char ch;
         listened=false;
 
         water = Level.water;
@@ -70,26 +70,24 @@ public class Electricity extends Blob {
 
 
         //..then decrement/shock
-        for (int i2 = 0; i2 < 1024; i2++) {
-            if (this.cur[i2] > 0) {
-                SubmergedPiranha sp = Hazard.findHazard(i2, SubmergedPiranha.class);
-                if (sp != null) {
+        for (int i=0; i < LENGTH; i++) {
+            if (cur[i] > 0){
+                //Check for piranhas
+                SubmergedPiranha sp=Hazard.findHazard(i,SubmergedPiranha.class);
+                if (sp!=null)
                     sp.spawnPiranha(null);
+
+                if ((ch = Actor.findChar( i )) != null) {
+                    int effect = (int)Math.sqrt( ch.totalHealthValue() );
+
+                    ch.damage( Random.Int( effect/2,effect ) + 1, this, Element.SHOCK );
                 }
-                Char aChar = Actor.findChar(i2);
-                if (aChar != null) {
-                    int effect = (int) Math.sqrt(aChar.totalHealthValue());
-                    aChar.damage(Random.Int(effect / 2, effect) + 1, this, Element.SHOCK);
-                }
-                int[] iArr2 = this.off;
-                iArr2[i2] = this.cur[i2] / 2;
-                this.volume += iArr2[i2];
-            } else if (Level.distance(i2, this.startCell) > 1) {
-                int i3 = this.volume;
-                int[] iArr3 = this.off;
-                this.volume = i3 - iArr3[i2];
-                iArr3[i2] = 0;
+                off[i] = cur[i]/2;
+                volume += off[i];
+            } else if (Level.distance(i,startCell)>2){//only spread near the source point
+                off[i] = 0;
             }
+
         }
 
     }

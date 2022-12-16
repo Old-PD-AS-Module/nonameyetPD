@@ -153,17 +153,15 @@ public abstract class Buff extends Actor {
 		return buff;
 	}
 
-    /*TODO 0.5 Remove*/
+    public static <T extends BuffPassive> T prolong( Char target, Class<T> buffClass, float duration ) {
+        T buff = affect( target, buffClass );
 
-//    public static <T extends BuffPassive> T prolong( Char target, Class<T> buffClass, float duration ) {
-//        T buff = affect( target, buffClass );
-//
-//        if (buff != null) {
-//            buff.postpone(duration);
-//        }
-//
-//        return buff;
-//    }
+        if (buff != null) {
+            buff.postpone(duration);
+        }
+
+        return buff;
+    }
 
     public static<T extends BuffPassive> T shorten( Char target, Class<T> buffClass, float duration ) {
         T buff = affect( target, buffClass );

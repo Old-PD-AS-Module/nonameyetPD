@@ -28,10 +28,6 @@ import com.ravenwolf.nnypd.visuals.effects.BlobEmitter;
 import com.ravenwolf.nnypd.visuals.effects.Speck;
 
 public class Darkness extends Blob {
-
-	public int actingPriority() {
-		return 13;
-	}
 	
 	@Override
 	protected void evolve() {

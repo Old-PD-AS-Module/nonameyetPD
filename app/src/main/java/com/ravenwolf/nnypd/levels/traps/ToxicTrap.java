@@ -27,7 +27,6 @@ import com.ravenwolf.nnypd.Dungeon;
 import com.ravenwolf.nnypd.actors.blobs.Blob;
 import com.ravenwolf.nnypd.actors.blobs.CorrosiveGas;
 import com.ravenwolf.nnypd.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 
 public class ToxicTrap extends Trap {
 
@@ -37,9 +36,5 @@ public class ToxicTrap extends Trap {
 		
 		GameScene.add( Blob.seed( pos, 300 + 10 * Dungeon.depth, CorrosiveGas.class ) );
 		
-	}
-	public void activate() {
-		GameScene.add(Blob.seed(((Trap) this).pos, 400, CorrosiveGas.class));
-		Sample.INSTANCE.play("snd_miss.mp3", 0.6f, 0.6f, 0.2f);
 	}
 }

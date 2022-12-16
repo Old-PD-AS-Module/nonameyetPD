@@ -37,10 +37,9 @@ public class ConfusionGas extends Blob {
 		super.evolve();
 		
 		Char ch;
-		Dazed buff;
-		for (int i = 0; i < 1024; i++) {
-			if (this.cur[i] > 0 && (ch = Actor.findChar(i)) != null && ((buff = ch.buff(Dazed.class)) == null || buff.getDuration() < 3)) {
-				BuffActive.add(ch, Dazed.class, 2.0f);
+		for (int i=0; i < LENGTH; i++) {
+			if (cur[i] > 0 && (ch = Actor.findChar( i )) != null) {
+                BuffActive.add( ch, Dazed.class, TICK * 2 );
 			}
 		}
 	}

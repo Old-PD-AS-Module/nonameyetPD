@@ -38,16 +38,6 @@ public class Exposed extends BuffReactive {
     @Override
     public String statusMessage() { return "exposed"; }
 */
-
-    public String statusMessage() {
-        return "exposed";
-    }
-
-
-    public int statusColor() {
-        return 16746496;
-    }
-
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );

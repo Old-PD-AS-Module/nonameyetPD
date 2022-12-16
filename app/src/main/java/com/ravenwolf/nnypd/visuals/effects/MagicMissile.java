@@ -290,7 +290,7 @@ public class MagicMissile extends Emitter {
 			size( 4 - (am = left / lifespan) * 3 );
 		}
 	}
-
+	
 	public static class EarthParticle extends PixelParticle.Shrinking {
 		
 		public static final Emitter.Factory FACTORY = new Factory() {	
@@ -299,15 +299,7 @@ public class MagicMissile extends Emitter {
 				((EarthParticle)emitter.recycle( EarthParticle.class )).reset( x, y );
 			}
 		};
-
-		public static final Emitter.Factory FALLING = new Emitter.Factory() {
-			@Override
-			public void emit(Emitter emitter, int index, float x, float y) {
-				((EarthParticle) emitter.recycle(EarthParticle.class)).resetFalling(x, y);
-			}
-		};
-
-
+		
 		public EarthParticle() {
 			super();
 			
@@ -329,17 +321,6 @@ public class MagicMissile extends Emitter {
 			
 			speed.set( Random.Float( -10, +10 ), Random.Float( -10, +10 ) );
 		}
-
-		public void resetFalling(float f, float f2) {
-			reset(f, f2 - 6.0f);
-			this.lifespan = 0.8f;
-			this.left = 0.8f;
-			this.size = 6.0f;
-			this.acc.y = 25.0f;
-			this.speed.y = -6.0f;
-			this.angularSpeed = Random.Float(-90.0f, 90.0f);
-		}
-
 	}
 
 	public static class BlessParticle extends PixelParticle {

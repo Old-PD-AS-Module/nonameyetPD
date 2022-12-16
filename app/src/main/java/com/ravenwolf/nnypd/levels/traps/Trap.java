@@ -27,161 +27,138 @@ import com.ravenwolf.nnypd.Dungeon;
 import com.ravenwolf.nnypd.actors.Actor;
 import com.ravenwolf.nnypd.actors.Char;
 import com.ravenwolf.nnypd.actors.hero.Hero;
+import com.ravenwolf.nnypd.items.rings.RingOfFortune;
 import com.ravenwolf.nnypd.levels.Level;
 import com.ravenwolf.nnypd.levels.Terrain;
 import com.ravenwolf.nnypd.misc.utils.GLog;
 import com.ravenwolf.nnypd.scenes.GameScene;
 import com.ravenwolf.nnypd.visuals.Assets;
+import com.ravenwolf.nnypd.visuals.effects.CellEmitter;
+import com.ravenwolf.nnypd.visuals.effects.Speck;
 import com.ravenwolf.nnypd.visuals.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundlable;
-import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
-public abstract class Trap implements Bundlable {
-    private static final String ACTIVE = "active";
-    public static final int ARROWS_H = 6;
-    public static final int ARROWS_V = 7;
-    public static final int BLACK = 8;
-    private static final String CAN_BE_SEARCHED = "canBeSearched";
-    public static final int CROSS = 5;
-    public static final int DIAMOND = 4;
-    private static final String DISARMED_BY_ACTIVATION = "disarmedByActivation";
-    public static final int DOTS = 0;
-    public static final int GREEN = 3;
-    public static final int GREY = 7;
-    public static final int GRILL = 2;
-    public static final int LINES = 1;
-    public static final int ORANGE = 1;
-    private static final String POS = "pos";
-    public static final int RED = 0;
-    public static final int STARS = 3;
-    public static final int TEAL = 4;
-    private static final String TXT_HIDDEN_PLATE_CLICKS = "A hidden pressure plate clicks!";
-    private static final String TXT_NO = "No, I changed my mind";
-    private static final String TXT_R_U_SURE = "You are aware of a trap on this tile. Once you step on it, the trap would be activated, which would most likely be quite a painful experience. Are you REALLY sure you want to step here?";
-    private static final String TXT_TRAPPED = "This tile is trapped!";
-    private static final String TXT_YES = "Yes, I know what I'm doing";
-    public static final int VIOLET = 5;
-    private static final String VISIBLE = "visible";
-    public static final int WHITE = 6;
-    public static final int YELLOW = 2;
+public abstract class Trap {
+
+    private static final String TXT_HIDDEN_PLATE_CLICKS = "隐藏的压力板发出脆响！";
+    private static final String TXT_TRAPPED = "你发现了地上的陷阱";
+
+    private static final String TXT_R_U_SURE =
+            "你已经意识到了该地面上的陷阱。当你踩上去的时候陷阱就会被激活，通常来讲绝对不是件好事。你真的要踩进去吗？";
+
+    private static final String TXT_YES			= "是的，我知道自己在做什么";
+    private static final String TXT_NO			= "不，我改变主意了";
+
     public static boolean stepConfirmed = false;
-    public int color;
-    public int pos;
-    public int shape;
-    public boolean visible;
-    public boolean active = true;
-    public boolean disarmedByActivation = true;
-    public boolean canBeHidden = true;
-    public boolean canBeSearched = true;
-    public boolean avoidsHallways = false;
 
-    public abstract void activate();
+    public static boolean itsATrap( int terrain ){
+        switch( terrain ) {
 
-    public Trap set(int pos) {
-        this.pos = pos;
-        return this;
-    }
+            case Terrain.TOXIC_TRAP:
+            case Terrain.FIRE_TRAP:
+            case Terrain.BOULDER_TRAP:
+            case Terrain.POISON_TRAP:
+            case Terrain.ALARM_TRAP:
+            case Terrain.LIGHTNING_TRAP:
+            case Terrain.BLADE_TRAP:
+            case Terrain.SUMMONING_TRAP:
+                return true;
 
-    public void adjustTrap(Level level) {
-    }
+            default:
+                return false;
 
-    public Trap reveal() {
-        this.visible = true;
-        GameScene.updateMap(this.pos);
-        return this;
-    }
-
-    public Trap hide() {
-        if (!this.canBeHidden) {
-            return reveal();
         }
-        this.visible = false;
-        GameScene.updateMap(this.pos);
-        return this;
     }
 
-    public void trigger() {
-        if (this.active) {
-            if (Dungeon.visible[this.pos]) {
-                Sample.INSTANCE.play(Assets.SND_TRAP);
-                if ((Terrain.flags[Dungeon.level.map[this.pos]] & 8) != 0) {
-                    GLog.i(TXT_HIDDEN_PLATE_CLICKS);
+    public static void askForConfirmation( final Hero hero ) {
+        GameScene.show(
+                new WndOptions( TXT_TRAPPED, TXT_R_U_SURE, TXT_YES, TXT_NO ) {
+                    @Override
+                    protected void onSelect( int index ) {
+                        if (index == 0) {
+                            stepConfirmed = true;
+                            hero.resume();
+                            stepConfirmed = false;
+                        }
+                    }
                 }
-                Char findChar = Actor.findChar(this.pos);
-                Hero hero = Dungeon.hero;
-                if (findChar == hero) {
-                    hero.interrupt();
-                }
-            }
-            if (this.disarmedByActivation) {
-                disarm();
-            }
-            Dungeon.level.discover(this.pos);
-            activate();
-        }
+        );
     }
 
 
-    public void disarm() {
-        this.active = false;
-        this.visible = true;
-        Dungeon.level.disarmTrap(this.pos);
-    }
+    public static void trigger( int cell ) {
 
-    public static void askForConfirmation(Hero hero) {
-        GameScene.show(new Trap$1(TXT_TRAPPED, TXT_R_U_SURE, new String[]{TXT_YES, TXT_NO}, hero));
-    }
+        Char ch = Actor.findChar( cell  );
 
-    public String name() {
-        return null;
-    }
-
-    public String desc() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(description());
-        sb.append(this.disarmedByActivation ? "" : dontDisarmOnActivationText());
-        return sb.toString();
-    }
-
-    public String description() {
-        return "Stepping onto a hidden pressure plate will activate the trap.";
-    }
-
-    protected String dontDisarmOnActivationText() {
-        return "\n\nThis trap is designed to only trigger when stepped in, and wont wer of upon activation.";
-    }
-
-    public void restoreFromBundle(Bundle bundle) {
-        this.pos = bundle.getInt(POS);
-        this.visible = bundle.getBoolean(VISIBLE);
-        this.active = bundle.getBoolean(ACTIVE);
-        this.disarmedByActivation = bundle.getBoolean(DISARMED_BY_ACTIVATION);
-        this.canBeSearched = bundle.getBoolean(CAN_BE_SEARCHED);
-    }
-
-    public void storeInBundle(Bundle bundle) {
-        bundle.put(POS, this.pos);
-        bundle.put(VISIBLE, this.visible);
-        bundle.put(ACTIVE, this.active);
-        bundle.put(CAN_BE_SEARCHED, this.canBeSearched);
-        bundle.put(DISARMED_BY_ACTIVATION, this.disarmedByActivation);
-    }
-
-    private static class Trap$1 extends WndOptions {
-        final Hero val$hero;
-
-        Trap$1(String arg0, String arg1, String[] arg2, Hero hero) {
-            super(arg0, arg1, arg2);
-            this.val$hero = hero;
+        if (ch == Dungeon.hero) {
+            Dungeon.hero.interrupt();
         }
 
-        protected void onSelect(int index) {
-            if (index == 0) {
-                Trap.stepConfirmed = true;
-                this.val$hero.resume();
-                Trap.stepConfirmed = false;
+        if( Dungeon.visible[cell] ) {
+
+            if( ( Terrain.flags[ Dungeon.level.map[ cell ] ] & Terrain.TRAPPED ) != 0 ) {
+                GLog.i(TXT_HIDDEN_PLATE_CLICKS);
+            }
+
+            Sample.INSTANCE.play( Assets.SND_TRAP);
+        }
+
+
+        int trap = Dungeon.level.map[cell];
+        Level.set( cell, Terrain.INACTIVE_TRAP);
+        GameScene.updateMap( cell );
+
+        if (ch == Dungeon.hero) {
+            if (Random.Float()<Dungeon.hero.ringBuffsBaseZero( RingOfFortune.Fortune.class )/2){
+                GLog.i("由于某些原因，这些陷阱并没有被触发。");
+                CellEmitter.get( ch.pos ).burst( Speck.factory( Speck.WOOL ), 4 );
+                return;
             }
         }
+
+        switch ( trap ) {
+
+            case Terrain.SECRET_TOXIC_TRAP:
+            case Terrain.TOXIC_TRAP:
+                ToxicTrap.trigger( cell );
+                break;
+
+            case Terrain.SECRET_FIRE_TRAP:
+            case Terrain.FIRE_TRAP:
+                FireTrap.trigger( cell );
+                break;
+
+            case Terrain.SECRET_BOULDER_TRAP:
+            case Terrain.BOULDER_TRAP:
+                BoulderTrap.trigger( cell );
+                break;
+
+            case Terrain.SECRET_POISON_TRAP:
+            case Terrain.POISON_TRAP:
+                PoisonTrap.trigger( cell, ch );
+                break;
+
+            case Terrain.SECRET_ALARM_TRAP:
+            case Terrain.ALARM_TRAP:
+                AlarmTrap.trigger( cell );
+                break;
+
+            case Terrain.SECRET_LIGHTNING_TRAP:
+            case Terrain.LIGHTNING_TRAP:
+                LightningTrap.trigger( cell );
+                break;
+
+            case Terrain.SECRET_BLADE_TRAP:
+            case Terrain.BLADE_TRAP:
+                BladeTrap.trigger( cell, ch );
+                break;
+
+            case Terrain.SECRET_SUMMONING_TRAP:
+            case Terrain.SUMMONING_TRAP:
+                SummoningTrap.trigger( cell);
+                break;
+        }
+
     }
 }

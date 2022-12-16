@@ -278,11 +278,6 @@ public class FieryRune extends Hazard {
             });
         }
 
-
-        public String desc() {
-            return "A fiery rune is placed here. It will explode in flames in contact of any being except its owner.";
-        }
-
         public void explode() {
 
             if (burning != null) {

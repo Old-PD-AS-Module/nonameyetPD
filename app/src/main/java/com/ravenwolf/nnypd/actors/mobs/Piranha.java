@@ -136,8 +136,7 @@ public class Piranha extends MobEvasive {
 			return super.act();
 		}
 	}
-
-
+	
 	@Override
 	public boolean reset() {
         state = SLEEPING;

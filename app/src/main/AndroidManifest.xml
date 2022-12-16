@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.ravenwolf.nnypd"
 	android:versionCode="57"
-	android:versionName="0.5.0-Beta1"
+	android:versionName="0.4.1-cnBeta2.5"
 	android:installLocation="auto">
 
     <uses-permission android:name="android.permission.VIBRATE"/>

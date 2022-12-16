@@ -141,13 +141,6 @@ public abstract class Mob extends Char {
         return TRIBE_DEFAULT;
     }
 
-
-    /*追加代码*/
-    public boolean mindVision() {
-        return true;
-    }
-
-
     @Override
     public int STR() {
         return 7+tier*2;
@@ -504,13 +497,8 @@ public abstract class Mob extends Char {
 			return true;
 		}
 	}
-
-    // com.ravenwolf.nonameyetpixeldungeon.actors.mobs.Mob
-    protected boolean canBeBackstabed() {
-        return (dexterity() != 0 || invulnerable() || this.stunned) ? false : true;
-    }
-
-    @Override
+	
+	@Override
 	public boolean add( Buff buff ) {
 
         if ( buff.awakensMobs() ){

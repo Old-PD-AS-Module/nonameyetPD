@@ -42,11 +42,7 @@ import com.watabou.noosa.audio.Sample;
 import javax.microedition.khronos.opengles.GL10;
 
 public class NoNameYetPixelDungeon extends Game {
-
-	public static boolean isometricTiles() {
-		return Preferences.INSTANCE.getBoolean(Preferences.KEY_ISOMETRIC, true);
-	}
-
+	
 	public NoNameYetPixelDungeon() {
 		super( TitleScene.class );
 

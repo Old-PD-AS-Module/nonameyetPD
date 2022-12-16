@@ -67,11 +67,6 @@ public class FellRune extends Hazard {
 
     }
 
-
-    public String desc() {
-        return "A fell rune is placed here. It will burn with magical fire any intruder that step on it. ";
-    }
-
     public void setValues( int pos, int strength, int duration ) {
 
         this.pos = pos;

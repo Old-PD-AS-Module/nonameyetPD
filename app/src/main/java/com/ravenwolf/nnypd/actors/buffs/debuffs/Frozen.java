@@ -24,9 +24,8 @@
 package com.ravenwolf.nnypd.actors.buffs.debuffs;
 
 import com.ravenwolf.nnypd.Element;
-import com.ravenwolf.nnypd.actors.Char;
 import com.ravenwolf.nnypd.actors.buffs.Buff;
-import com.ravenwolf.nnypd.actors.buffs.BuffActive;
+import com.ravenwolf.nnypd.actors.Char;
 import com.ravenwolf.nnypd.actors.hero.Hero;
 import com.ravenwolf.nnypd.visuals.sprites.CharSprite;
 import com.ravenwolf.nnypd.visuals.ui.BuffIndicator;
@@ -108,7 +107,7 @@ public class Frozen extends Debuff {
     @Override
     public void detach() {
         super.detach();
-        Chilled buffChilled = BuffActive.add(this.target, Chilled.class, 2.0f);
+        Chilled buffChilled = target.buff(Chilled.class);
         if(buffChilled!=null)
             buffChilled.resetFrezzeCounter();
         Stun.unfreeze( target );

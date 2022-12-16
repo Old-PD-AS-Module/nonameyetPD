@@ -47,7 +47,7 @@ public class CloakOfShadows extends Bonus {
     }
 
     public int actingPriority(){
-        return 10;
+        return 4;
     }
 
 /*    @Override

@@ -45,9 +45,6 @@ import com.ravenwolf.nnypd.items.armours.body.BodyArmor;
 import com.ravenwolf.nnypd.items.misc.Gold;
 import com.ravenwolf.nnypd.levels.Room.Type;
 import com.ravenwolf.nnypd.levels.painters.Painter;
-import com.ravenwolf.nnypd.levels.traps.IceBarrierTrap;
-import com.ravenwolf.nnypd.levels.traps.SpearsTrap;
-import com.ravenwolf.nnypd.levels.traps.Trap;
 import com.ravenwolf.nnypd.misc.mechanics.Ballistica;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Graph;
@@ -400,34 +397,46 @@ public abstract class RegularLevel extends Level {
 	
 	protected abstract boolean[] water();
 	protected abstract boolean[] grass();
-
-
+	
 	protected void placeTraps() {
-		IceBarrierTrap iceBarrierTrap;
+		
 		int nTraps = nTraps();
 		float[] trapChances = trapChances();
-		int nTraps2 = nTraps + (this.feeling == Level.Feeling.PERMAFROST ? 6 : 0);
-		for (int i = 0; i < nTraps2; i++) {
-			int trapPos = -1;
-			for (int j = 0; j < 5 && (trapPos = randomTrapCell()) <= -1; j++) {
-			}
-			if (trapPos > -1) {
-				if (this.feeling != Level.Feeling.PERMAFROST || Random.Int(2) != 0) {
-					try {
-						iceBarrierTrap = (IceBarrierTrap) trapClasses()[Random.chances(trapChances)].newInstance();
-					} catch (Exception e) {
-					}
-				} else if (Random.Int(3) == 0) {
-					iceBarrierTrap = new IceBarrierTrap();
-				} else {
-					iceBarrierTrap = new ChillingTrap();
+		
+		for (int i=0; i < nTraps; i++) {
+			
+			int trapPos = randomTrapCell();
+
+			if ( trapPos > -1 ) {
+				switch (Random.chances( trapChances )) {
+				case 0:
+					map[trapPos] = Random.Int(4)==0 ? Terrain.TOXIC_TRAP : Terrain.SECRET_TOXIC_TRAP;
+					break;
+				case 1:
+					map[trapPos] = Random.Int(3)==0 ? Terrain.FIRE_TRAP :Terrain.SECRET_FIRE_TRAP;
+					break;
+				case 2:
+					map[trapPos] = Random.Int(3)==0 ? Terrain.BOULDER_TRAP :Terrain.SECRET_BOULDER_TRAP;
+					break;
+				case 3:
+					map[trapPos] = Random.Int(3)==0 ? Terrain.POISON_TRAP :Terrain.SECRET_POISON_TRAP;
+					break;
+				case 4:
+					map[trapPos] = Terrain.SECRET_ALARM_TRAP;
+					break;
+				case 5:
+					map[trapPos] = Random.Int(3)==0 ? Terrain.LIGHTNING_TRAP :Terrain.SECRET_LIGHTNING_TRAP;
+					break;
+				case 6:
+					map[trapPos] = Random.Int(3)==0 ? Terrain.BLADE_TRAP :Terrain.SECRET_BLADE_TRAP;
+					break;
+				case 7:
+					map[trapPos] = Terrain.SECRET_SUMMONING_TRAP;
+					break;
+                case 8:
+                    map[trapPos] = Terrain.INACTIVE_TRAP;
+                    break;
 				}
-				setTrap(iceBarrierTrap, trapPos);
-				iceBarrierTrap.hide();
-				if (Random.Int(Dungeon.chapter() + 1) == 0) {
-					iceBarrierTrap.reveal();
-				}
-				this.map[trapPos] = iceBarrierTrap.visible ? 13 : 14;
 			}
 		}
 	}
@@ -455,11 +464,7 @@ public abstract class RegularLevel extends Level {
 //                ( Dungeon.depth - 1 ) / 6 + 1 + Random.Int( 3 ) :
 //                Random.Int( ( Dungeon.depth - 1 ) / 6 + 1 ) + Random.Int( 3 ) ;
 //    }
-
-	protected Class<?>[] trapClasses() {
-		return new Class[]{SpearsTrap.class};
-	}
-
+	
 	protected float[] trapChances() {
 		float[] chances = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 		return chances;
@@ -746,7 +751,10 @@ public abstract class RegularLevel extends Level {
 		else if (chapter < 3 && Random.Int(3) >0)
 			Enchantress.spawn(this);
 		else if (chapter > 2 && chapter < 5 && Random.Int(chapter) < 2)
-			VendingMachine.spawn(this, Random.Int(2) == 0);
+			if (Random.Int(2) == 0)
+				VendingMachine.spawn(this, true);
+			else
+				VendingMachine.spawn(this, false);
 		else
 			MysteriousGuy.spawn(this);
 	}
@@ -1006,7 +1014,7 @@ public abstract class RegularLevel extends Level {
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
 		
-		rooms = new HashSet<Room>( (Collection<? extends Room>) bundle.getCollection( "rooms" ));
+		rooms = new HashSet<Room>( (Collection<? extends Room>) (Object) bundle.getCollection( "rooms" ) );
 		for (Room r : rooms) {
 			if (r.type == Type.WEAK_FLOOR) {
 				weakFloorCreated = true;

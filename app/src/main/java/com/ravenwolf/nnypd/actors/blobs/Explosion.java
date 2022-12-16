@@ -29,6 +29,8 @@ import com.ravenwolf.nnypd.actors.Actor;
 import com.ravenwolf.nnypd.actors.Char;
 import com.ravenwolf.nnypd.actors.buffs.BuffActive;
 import com.ravenwolf.nnypd.actors.buffs.debuffs.Dazed;
+import com.ravenwolf.nnypd.actors.hero.Hero;
+import com.ravenwolf.nnypd.actors.mobs.Bestiary;
 import com.ravenwolf.nnypd.actors.mobs.Robot;
 import com.ravenwolf.nnypd.items.Heap;
 import com.ravenwolf.nnypd.levels.Level;
@@ -44,12 +46,13 @@ import com.watabou.utils.Random;
 public class Explosion {
 
 	// Returns true, if this cell is visible
-    public static boolean affect(int c, int r, int radius, int damage, Object source) {
-        Heap heap;
+	public static boolean affect( int c, int r, int radius, int damage, Object source ) {
+
         boolean terrainAffected = false;
+
         if (Dungeon.visible[c]) {
-            CellEmitter.get(c).burst(BlastParticle.FACTORY, 12 / (r + 1));
-            CellEmitter.get(c).burst(SmokeParticle.FACTORY, 6 / (r + 1));
+            CellEmitter.get(c).burst( BlastParticle.FACTORY, 12 / ( r + 1 ) );
+            CellEmitter.get(c).burst( SmokeParticle.FACTORY, 6 / ( r + 1 ) );
         }
 
         if (Level.flammable[c]) {
@@ -64,31 +67,43 @@ public class Explosion {
             CellEmitter.get( c ).start(Speck.factory(Speck.ROCK), 0.07f, 6);
             terrainAffected = true;
         }
-        if (NagaBossLevel.isDestructibleStatue(c)) {
-            Level.set(c, 1);
-            GameScene.updateMap(c);
-            CellEmitter.get(c).start(Speck.factory(8), 0.07f, 6);
-            terrainAffected = true;
-        }
+
+
         Char ch = Actor.findChar(c);
+
         if (ch != null && ch.isAlive()) {
-            int mod = (ch.totalHealthValue() * damage) / 50;
-            int dmg = ((Random.IntRange(mod / 2, mod) + Random.IntRange(damage / 2, damage)) * ((radius - r) + 2)) / (radius + 2);
+
+            int mod = ch.HT * damage /
+                ( Bestiary.isBoss(ch) ? 200 : ch instanceof Hero ? 100 : 50 );
+
+            int dmg = Random.IntRange( mod / 2, mod );
+            dmg += Random.IntRange( damage / 2, damage );
+            dmg *= ( radius - r + 2 );
+            dmg /= ( radius + 2 );
+
             if (dmg > 0) {
-                ch.damage(ch.absorb(dmg, true), source, Element.PHYSICAL);
+                ch.damage(ch.absorb(dmg, true ), source, Element.PHYSICAL);
                 if (ch.isAlive()) {
-                    BuffActive.addFromDamage(ch, Dazed.class, damage);
+                    BuffActive.addFromDamage( ch, Dazed.class, damage );
                 }
             }
         }
-        if (Dungeon.hero.isAlive() && (heap = Dungeon.level.heaps.get(c)) != null) {
-            if (source instanceof Robot) {
-                heap.blast("爆炸");
-            } else {
-                heap.blast("爆炸");
+
+        if( Dungeon.hero.isAlive() ) {
+            Heap heap = Dungeon.level.heaps.get(c);
+            if (heap != null) {
+                if (source instanceof Robot)
+//                    heap.shatter("Explosion");
+                    heap.shatter("爆炸");
+                else
+//                    heap.blast("Explosion");
+                    heap.blast("爆炸");
             }
         }
+
         Dungeon.level.press(c, null);
+
         return terrainAffected;
-    }
+
+	}
 }
